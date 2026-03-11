@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>তানিয়ার পৃথিবী</title>
+  <script src="https://cdn.jsdelivr.net/npm/react/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/framer-motion/dist/framer-motion.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide/dist/lucide.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.2/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-[#0a0f1e] text-white font-sans">
+
+<div id="root"></div>
+
+<script type="text/javascript">
+
+const { useState, useEffect } = React;
+const { motion } = window['framer-motion'];
+const { Plus, Edit3, LogOut } = window['lucide'];
+
+const LoadingScreen = () => (
+  <div className="h-screen w-full flex flex-col items-center justify-center">
+    <motion.div 
+      animate={{ scale: [1,1.2,1], filter: ["hue-rotate(0deg)","hue-rotate(45deg)","hue-rotate(0deg)"] }}
+      transition={{ repeat: Infinity, duration: 1.5 }}
+      className="relative"
+    >
+      <img src="heart.png" alt="Heart" className="w-24 h-24 drop-shadow-[0_0_15px_rgba(255,0,0,0.6)]"/>
+    </motion.div>
+    <motion.h2 
+      animate={{ opacity: [0.3,1,0.3] }}
+      transition={{ repeat: Infinity, duration: 2 }}
+      className="mt-8 text-[#5eead4] font-bold text-2xl tracking-[0.2em]"
+    >
+      তানিয়ার পৃথিবী সাজানো হচ্ছে...
+    </motion.h2>
+  </div>
+);
+
+function App() {
+  const [loading, setLoading] = useState(true);
+  const [isLocked, setIsLocked] = useState(true);
+  const [pin, setPin] = useState("");
+  const [balance, setBalance] = useState({ income: 0, expense: 0 });
+  const [members, setMembers] = useState([]);
+
+  // Dummy data for standalone HTML
+  useEffect(() => {
+    setBalance({ income: 5000, expense: 3200 });
+    setMembers([
+      { id:1, name:"লamia", relation:"বড় বোন", bio:"সেরা বন্ধু", img:"lamia.jpg" },
+      { id:2, name:"রানা", relation:"ভাই", bio:"সব সময় পাশে", img:"rana.jpg" }
+    ]);
+    setTimeout(()=>setLoading(false),1500);
+  }, []);
+
+  const handleUnlock = () => {
+    if(pin==="2026") setIsLocked(false);
+    else alert("ভুল পিন! 🤫");
+  };
+
+  if(loading) return <LoadingScreen />;
+  if(isLocked) return (
+    <div className="h-screen flex items-center justify-center">
+      <motion.div initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} className="bg-white/5 p-12 rounded-[60px] border border-white/10 text-center backdrop-blur-3xl shadow-2xl">
+        <img src="logo.png" className="w-24 h-24 rounded-full mx-auto mb-8" alt="Tania Logo"/>
+        <h1 className="text-3xl font-bold mb-8">তানিয়ার পৃথিবী</h1>
+        <input type="password" placeholder="PIN" 
+          className="w-full bg-white/5 border border-white/10 rounded-3xl py-4 text-center text-2xl mb-6"
+          onChange={(e)=>setPin(e.target.value)}
+        />
+        <button onClick={handleUnlock} className="w-full py-4 bg-gradient-to-r from-[#4facfe] to-[#00f2fe] rounded-3xl font-bold text-gray-900 shadow-lg hover:scale-105 transition-transform">আনলক করুন</button>
+      </motion.div>
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen p-6 md:p-12 relative">
+      <header className="max-w-6xl mx-auto flex justify-between items-center mb-16 border-b border-white/5 pb-8">
+        <div className="flex items-center gap-4">
+          <img src="logo.png" className="w-16 h-16 rounded-full ring-2 ring-cyan-500/50"/>
+          <div>
+            <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#4facfe] to-[#00f2fe]">তানিয়ার পৃথিবী 🌸</h1>
+            <p className="text-white/30 text-[10px] tracking-[0.3em] uppercase">Private Dashboard</p>
+          </div>
+        </div>
+        <button onClick={()=>setIsLocked(true)} className="p-4 bg-white/5 rounded-2xl text-red-400"><LogOut size={20}/></button>
+      </header>
+
+      <main className="max-w-6xl mx-auto space-y-12">
+        {/* Finance Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="bg-white/5 p-10 rounded-[45px] border border-white/10 group relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-2 h-full bg-gradient-to-b from-[#4facfe] to-[#00f2fe]" />
+            <p className="text-white/40 text-sm mb-2">সংসারের ইনকাম</p>
+            <h3 className="text-5xl font-bold tracking-tighter text-[#4facfe]">৳{balance.income}</h3>
+            <button className="absolute top-8 right-8 p-3 bg-white/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-all"><Edit3 size={18}/></button>
+          </div>
+          <div className="bg-white/5 p-10 rounded-[45px] border border-white/10 group relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-2 h-full bg-gradient-to-b from-rose-500 to-pink-500" />
+            <p className="text-white/40 text-sm mb-2">সংসারের খরচ</p>
+            <h3 className="text-5xl font-bold tracking-tighter text-rose-400">৳{balance.expense}</h3>
+            <button className="absolute top-8 right-8 p-3 bg-white/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-all"><Edit3 size={18}/></button>
+          </div>
+        </div>
+
+        {/* Family Section */}
+        <section className="bg-white/5 rounded-[50px] p-10 border border-white/10 backdrop-blur-xl">
+          <div className="flex justify-between items-center mb-12">
+            <h2 className="text-3xl font-bold flex items-center gap-4">
+              <img src="heart.png" className="w-8 h-8"/> প্রিয় পরিবার
+            </h2>
+            <button className="bg-gradient-to-r from-[#4facfe] to-[#00f2fe] p-3 rounded-2xl text-gray-900 shadow-lg shadow-cyan-500/20 hover:scale-110 transition-transform"><Plus/></button>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {members.map(m => (
+              <div key={m.id} className="bg-white/5 p-6 rounded-[40px] border border-white/5 flex gap-6 items-center hover:bg-white/10 transition-all group">
+                <img src={m.img} className="w-24 h-24 rounded-[30px] object-cover border-2 border-[#4facfe]/20 shadow-lg"/>
+                <div className="flex-1">
+                  <h4 className="font-bold text-xl text-[#4facfe]">{m.name}</h4>
+                  <span className="text-[10px] bg-cyan-500/10 text-cyan-400 px-3 py-1 rounded-full border border-cyan-500/20">{m.relation}</span>
+                  <p className="text-sm text-white/50 mt-3 font-light italic leading-relaxed">"{m.bio}"</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      </main>
+
+      <footer className="text-center py-16 opacity-20 text-[10px] tracking-[0.5em] uppercase font-bold">
+        © ২০২৬ তানিয়ার পৃথিবী • Personal Digital Space
+      </footer>
+    </div>
+  );
+}
+
+ReactDOM.render(<App />, document.getElementById('root'));
+
+</script>
+</body>
+</html>
